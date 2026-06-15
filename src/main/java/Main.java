@@ -12,7 +12,12 @@ public class Main {
                 break;
             }else if(s.startsWith("echo ")){
                 System.out.println(s.substring(5));
-            }else{
+            }else if(s.equals("type")){
+                if(s.equals("type") || s.equals("exit") || s.equals("echo")){
+                    System.out.println(s +" is a shell builtin");
+                }
+            }
+            else{
             System.out.println(s + ": command not found");
             }
         }
