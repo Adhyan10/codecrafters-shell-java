@@ -15,7 +15,7 @@ public class Main {
              System.out.print("$ ");
               Scanner sc = new Scanner(System.in);
              String s = sc.nextLine();
-            System.out.print(s + ": command not found");
+            System.out.println(s + ": command not found");
         }
     }
 }
