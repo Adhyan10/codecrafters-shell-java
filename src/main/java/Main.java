@@ -13,8 +13,9 @@ public class Main {
             }else if(s.equals("echo")){
                 System.out.println(s);
                 break;
-            }
+            }else{
             System.out.println(s + ": command not found");
+            }
         }
     }
 }
