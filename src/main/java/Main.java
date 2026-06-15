@@ -11,7 +11,7 @@ public class Main {
             if (s.equals("exit")) {
                 break;
             }else if(s.startsWith("echo ")){
-                System.out.println(s.substring(4));
+                System.out.println(s.substring(5));
                 break;
             }else{
             System.out.println(s + ": command not found");
