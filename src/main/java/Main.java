@@ -10,15 +10,17 @@ public class Main {
             String s = sc.nextLine();
             if (s.equals("exit")) {
                 break;
-            }else if(s.startsWith("echo ")){
+            } else if (s.startsWith("echo ")) {
                 System.out.println(s.substring(5));
-            }else if(s.equals("type")){
-                if(s.equals("type") || s.equals("exit") || s.equals("echo")){
-                    System.out.println(s +" is a shell builtin");
+            } else if (s.startsWith("type ")) {
+                String command = s.substring(5);
+                if (command.equals("type") || command.equals("exit") || command.equals("echo")) {
+                    System.out.println(command + " is a shell builtin");
+                } else {
+                    System.out.println(command + ": not found");
                 }
-            }
-            else{
-            System.out.println(s + ": command not found");
+            } else {
+                System.out.println(s + ": command not found");
             }
         }
     }
