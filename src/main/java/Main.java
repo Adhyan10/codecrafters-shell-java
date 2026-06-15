@@ -10,8 +10,8 @@ public class Main {
             String s = sc.nextLine();
             if (s.equals("exit")) {
                 break;
-            }else if(s.equals("echo")){
-                System.out.println(s);
+            }else if(s.startsWith("echo ")){
+                System.out.println(s.substring(4));
                 break;
             }else{
             System.out.println(s + ": command not found");
