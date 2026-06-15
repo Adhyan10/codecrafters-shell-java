@@ -12,6 +12,7 @@ public class Main {
                 break;
             }else if(s.startsWith("echo ")){
                 System.out.println(s.substring(5));
+                System.out.print("$ ");
                 break;
             }else{
             System.out.println(s + ": command not found");
