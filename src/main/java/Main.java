@@ -12,6 +12,8 @@ public class Main {
         System.out.print(s + ": command not found");
 
         while(true){
+             System.out.print("$ ");
+             String s = sc.nextLine();
             System.out.print(s + ": command not found");
         }
     }
