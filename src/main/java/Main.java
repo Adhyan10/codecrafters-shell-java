@@ -19,7 +19,13 @@ public class Main {
                 } else {
                     System.out.println(command + ": not found");
                 }
-            } else {
+            }else if(s.startsWith("type ")){
+                String x = s.substring(5);
+                if(x.equals("exit") || x.equals("type") || x.equals("echo")){
+                    System.out.println(x + " is a shell builtin");
+                }
+            }
+             else {
                 System.out.println(s + ": command not found");
             }
         }
