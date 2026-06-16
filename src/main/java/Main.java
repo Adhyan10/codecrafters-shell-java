@@ -24,6 +24,13 @@ public class Main {
                 if(x.equals("exit") || x.equals("type") || x.equals("echo")){
                     System.out.println(x + " is a shell builtin");
                 }
+            }else if(s.startsWith("type ")){
+                String a = s.substring(5);
+                if(a.equals("exit") || a.equals("type") || a.equals("echo")){
+                    System.err.println(a + " is a shell builtin");
+                }else if(a.exists() && a.canExecute()){
+                    System.out.println(a +" is " + a.getAbsolutePath());
+                }
             }
              else {
                 System.out.println(s + ": command not found");
