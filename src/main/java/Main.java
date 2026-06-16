@@ -24,9 +24,8 @@ public class Main {
                     
                     if (path != null) {
                         String[] directories = path.split(File.pathSeparator);
-                        for (int i = 0; i < directories.length; i++) {
-                               String dir = directories[i];
-                              File file = new File(dir, command);
+                        for (String dir : directories) {
+                            File file = new File(dir, command);
                             if (file.isFile() && file.canExecute()) {
                                 System.out.println(command + " is " + file.getAbsolutePath());
                                 found = true;
