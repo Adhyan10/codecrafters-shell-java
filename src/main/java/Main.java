@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.io.File;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -17,22 +18,27 @@ public class Main {
                 if (command.equals("type") || command.equals("exit") || command.equals("echo")) {
                     System.out.println(command + " is a shell builtin");
                 } else {
-                    System.out.println(command + ": not found");
+                    // Search in PATH
+                    String path = System.getenv("PATH");
+                    boolean found = false;
+                    
+                    if (path != null) {
+                        String[] directories = path.split(File.pathSeparator);
+                        for (String dir : directories) {
+                            File file = new File(dir, command);
+                            if (file.isFile() && file.canExecute()) {
+                                System.out.println(command + " is " + file.getAbsolutePath());
+                                found = true;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (!found) {
+                        System.out.println(command + ": not found");
+                    }
                 }
-            }else if(s.startsWith("type ")){
-                String x = s.substring(5);
-                if(x.equals("exit") || x.equals("type") || x.equals("echo")){
-                    System.out.println(x + " is a shell builtin");
-                }
-            }else if(s.startsWith("type ")){
-                String a = s.substring(5);
-                if(a.equals("exit") || a.equals("type") || a.equals("echo")){
-                    System.err.println(a + " is a shell builtin");
-                }else if(a.exists() && a.canExecute()){
-                    System.out.println(a +" is " + a.getAbsolutePath());
-                }
-            }
-             else {
+            } else {
                 System.out.println(s + ": command not found");
             }
         }
