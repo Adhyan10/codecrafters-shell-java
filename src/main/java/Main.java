@@ -20,24 +20,24 @@ public class Main {
                 } else {
                     // Search in PATH
                     String path = System.getenv("PATH");
-                    boolean found = false;
 
-                    if (path != null) {
-                        String[] directories = path.split(File.pathSeparator);
-                        for (int i = 0; i < directories.length; i++) {
-                            String dir = directories[i];
-                            File file = new File(dir, command);
-                            if (file.isFile() && file.canExecute()) {
-                                System.out.println(command + " is " + file.getAbsolutePath());
-                                found = true;
-                                break;
-                            }
+                    if (path == null) {
+                        System.out.println(command + ": not found");
+                        return;
+                    }
+
+                    String[] directories = path.split(File.pathSeparator);
+
+                    for (int i = 0; i < directories.length; i++) {
+                        String dir = directories[i];
+                        File file = new File(dir, command);
+                        if (file.isFile() && file.canExecute()) {
+                            System.out.println(command + " is " + file.getAbsolutePath());
+                            return;
                         }
                     }
 
-                    if (!found) {
-                        System.out.println(command + ": not found");
-                    }
+                    System.out.println(command + ": not found");
                 }
             } else {
                 System.out.println(s + ": command not found");
