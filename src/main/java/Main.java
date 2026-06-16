@@ -21,10 +21,11 @@ public class Main {
                     // Search in PATH
                     String path = System.getenv("PATH");
                     boolean found = false;
-                    
+
                     if (path != null) {
                         String[] directories = path.split(File.pathSeparator);
-                        for (String dir : directories) {
+                        for (int i = 0; i < directories.length; i++) {
+                            String dir = directories[i];
                             File file = new File(dir, command);
                             if (file.isFile() && file.canExecute()) {
                                 System.out.println(command + " is " + file.getAbsolutePath());
@@ -33,7 +34,7 @@ public class Main {
                             }
                         }
                     }
-                    
+
                     if (!found) {
                         System.out.println(command + ": not found");
                     }
