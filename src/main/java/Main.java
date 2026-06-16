@@ -23,7 +23,7 @@ public class Main {
 
                     if (path == null) {
                         System.out.println(command + ": not found");
-                        return;
+                        break;
                     }
 
                     String[] directories = path.split(File.pathSeparator);
@@ -33,7 +33,7 @@ public class Main {
                         File file = new File(dir, command);
                         if (file.isFile() && file.canExecute()) {
                             System.out.println(command + " is " + file.getAbsolutePath());
-                            return;
+                           break;
                         }
                     }
 
