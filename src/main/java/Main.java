@@ -19,7 +19,7 @@ public class Main {
                     System.out.println(command + " is a shell builtin");
                 } else {
                     // Search in PATH
-                      String path = System.getenv("PATH");
+                    String path = System.getenv("PATH");
                     boolean found = false;
 
                     if (path != null) {
