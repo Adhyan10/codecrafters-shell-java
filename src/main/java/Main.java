@@ -1,26 +1,43 @@
+import java.io.File;
 import java.util.Scanner;
+
 
 public class Main {
     public static void main(String[] args) throws Exception {
         // TODO: Uncomment the code below to pass the first stage
-        System.out.print("$ ");
 
-        // while (true) {
-        //     System.out.print("$ ");
-        //     Scanner sc = new Scanner(System.in);
-        //     String s = sc.nextLine();
-        //     if (s.equals("exit")) {
-        //         break;
-        //     } else if (s.startsWith("echo ")) {
-        //         System.out.println(s.substring(5));
-        //     } else if (s.startsWith("type ")) {
-        //         String command = s.substring(5);
-        //         if (command.equals("type") || command.equals("exit") || command.equals("echo")) {
-        //             System.out.println(command + " is a shell builtin");
-        //         } else {
+        while (true) {
+            System.out.print("$ ");
+            Scanner sc = new Scanner(System.in);
+            String s = sc.nextLine();
+            if (s.equals("exit")) {
+                break;
+            } else if (s.startsWith("echo ")) {
+                System.out.println(s.substring(5));
+            } else if (s.startsWith("type ")) {
+                String command = s.substring(5);
+                if (command.equals("type") || command.equals("exit") || command.equals("echo")) {
+                    System.out.println(command + " is a shell builtin");
+                } else {
+                     String path = System.getenv("PATH");
+                    boolean found = false;
 
-        //         }
-        //     }
-        // }
+                    if (path != null) {
+                        String[] directories = path.split(File.pathSeparator);
+                        for (String dir : directories) {
+                            File file = new File(dir, command);
+                            if (file.isFile() && file.canExecute()) {
+                                System.out.println(command + " is " + file.getAbsolutePath());
+                                found = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!found) {
+                        System.out.println(command + ": not found");
+                    }
+                }
+            }
+        }
     }
 }
