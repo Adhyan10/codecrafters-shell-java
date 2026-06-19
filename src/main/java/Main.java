@@ -43,10 +43,7 @@ public class Main {
                 String path = getPath(command);
 
                 if (path != null) {
-                    String[] processArgs = inputArgs.clone();
-                    processArgs[0] = path;
-
-                    ProcessBuilder pb = new ProcessBuilder(processArgs);
+                    ProcessBuilder pb = new ProcessBuilder(inputArgs);
                     pb.inheritIO();
 
                     Process process = pb.start();
@@ -56,10 +53,14 @@ public class Main {
                 }
             }
         }
+
+        sc.close();
     }
 
     private static boolean isBuiltin(String cmd) {
-        return cmd.equals("exit") || cmd.equals("echo") || cmd.equals("type");
+        return cmd.equals("exit")
+                || cmd.equals("echo")
+                || cmd.equals("type");
     }
 
     private static String getPath(String command) {
