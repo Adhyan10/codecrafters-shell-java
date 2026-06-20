@@ -86,19 +86,26 @@ public class Main {
     private static String[] parseArguments(String input) {
         List<String> args = new ArrayList<>();
         StringBuilder current = new StringBuilder();
+
         boolean inSingleQuote = false;
+        boolean inDoubleQuote = false;
 
         for (int i = 0; i < input.length(); i++) {
             char ch = input.charAt(i);
 
-            if (ch == '\'') {
+            if (ch == '\'' && !inDoubleQuote) {
                 inSingleQuote = !inSingleQuote;
-            } else if (Character.isWhitespace(ch) && !inSingleQuote) {
+            } 
+            else if (ch == '"' && !inSingleQuote) {
+                inDoubleQuote = !inDoubleQuote;
+            } 
+            else if (Character.isWhitespace(ch) && !inSingleQuote && !inDoubleQuote) {
                 if (current.length() > 0) {
                     args.add(current.toString());
                     current.setLength(0);
                 }
-            } else {
+            } 
+            else {
                 current.append(ch);
             }
         }
