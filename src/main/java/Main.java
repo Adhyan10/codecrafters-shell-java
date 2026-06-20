@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.PrintWriter;
 import java.util.Scanner;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -17,36 +18,82 @@ public class Main {
             }
 
             String[] inputArgs = parseArguments(input);
+
+            String outputFile = null;
+            List<String> filteredArgs = new ArrayList<>();
+
+            for (int i = 0; i < inputArgs.length; i++) {
+                if (inputArgs[i].equals(">") || inputArgs[i].equals("1>")) {
+                    if (i + 1 < inputArgs.length) {
+                        outputFile = inputArgs[i + 1];
+                    }
+                    break;
+                }
+                filteredArgs.add(inputArgs[i]);
+            }
+
+            inputArgs = filteredArgs.toArray(new String[0]);
+
             String command = inputArgs[0];
 
             if (command.equals("exit")) {
                 break;
             } else if (command.equals("echo")) {
-                System.out.println(
-                    String.join(" ", Arrays.copyOfRange(inputArgs, 1, inputArgs.length))
+
+                String output = String.join(
+                        " ",
+                        Arrays.copyOfRange(inputArgs, 1, inputArgs.length)
                 );
+
+                if (outputFile != null) {
+                    try (PrintWriter pw = new PrintWriter(outputFile)) {
+                        pw.println(output);
+                    }
+                } else {
+                    System.out.println(output);
+                }
+
             } else if (command.equals("type")) {
+
                 if (inputArgs.length > 1) {
                     String cmdToType = inputArgs[1];
 
+                    String output;
+
                     if (isBuiltin(cmdToType)) {
-                        System.out.println(cmdToType + " is a shell builtin");
+                        output = cmdToType + " is a shell builtin";
                     } else {
                         String path = getPath(cmdToType);
 
                         if (path != null) {
-                            System.out.println(cmdToType + " is " + path);
+                            output = cmdToType + " is " + path;
                         } else {
-                            System.out.println(cmdToType + ": not found");
+                            output = cmdToType + ": not found";
                         }
                     }
+
+                    if (outputFile != null) {
+                        try (PrintWriter pw = new PrintWriter(outputFile)) {
+                            pw.println(output);
+                        }
+                    } else {
+                        System.out.println(output);
+                    }
                 }
+
             } else {
+
                 String path = getPath(command);
 
                 if (path != null) {
                     ProcessBuilder pb = new ProcessBuilder(inputArgs);
-                    pb.inheritIO();
+
+                    if (outputFile != null) {
+                        pb.redirectOutput(new File(outputFile));
+                        pb.redirectError(ProcessBuilder.Redirect.INHERIT);
+                    } else {
+                        pb.inheritIO();
+                    }
 
                     Process process = pb.start();
                     process.waitFor();
@@ -93,7 +140,6 @@ public class Main {
         for (int i = 0; i < input.length(); i++) {
             char ch = input.charAt(i);
 
-            // Backslashes inside double quotes
             if (ch == '\\' && inDoubleQuote) {
                 if (i + 1 < input.length()) {
                     char next = input.charAt(i + 1);
@@ -111,7 +157,6 @@ public class Main {
                 }
             }
 
-            // Backslashes outside quotes
             else if (ch == '\\' && !inSingleQuote && !inDoubleQuote) {
                 if (i + 1 < input.length()) {
                     current.append(input.charAt(i + 1));
