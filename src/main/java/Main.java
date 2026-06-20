@@ -21,20 +21,36 @@ public class Main {
 
             String outputFile = null;
             String errorFile = null;
+            boolean appendOutput = false;
+
             List<String> filteredArgs = new ArrayList<>();
 
             for (int i = 0; i < inputArgs.length; i++) {
+
                 if (inputArgs[i].equals(">") || inputArgs[i].equals("1>")) {
                     if (i + 1 < inputArgs.length) {
                         outputFile = inputArgs[i + 1];
+                        appendOutput = false;
                         i++;
                     }
-                } else if (inputArgs[i].equals("2>")) {
+                }
+
+                else if (inputArgs[i].equals(">>") || inputArgs[i].equals("1>>")) {
+                    if (i + 1 < inputArgs.length) {
+                        outputFile = inputArgs[i + 1];
+                        appendOutput = true;
+                        i++;
+                    }
+                }
+
+                else if (inputArgs[i].equals("2>")) {
                     if (i + 1 < inputArgs.length) {
                         errorFile = inputArgs[i + 1];
                         i++;
                     }
-                } else {
+                }
+
+                else {
                     filteredArgs.add(inputArgs[i]);
                 }
             }
@@ -49,7 +65,9 @@ public class Main {
 
             if (command.equals("exit")) {
                 break;
-            } else if (command.equals("echo")) {
+            }
+
+            else if (command.equals("echo")) {
 
                 String output = String.join(
                         " ",
@@ -57,14 +75,18 @@ public class Main {
                 );
 
                 if (outputFile != null) {
-                    try (PrintWriter pw = new PrintWriter(outputFile)) {
+                    try (java.io.FileWriter fw =
+                                 new java.io.FileWriter(outputFile, appendOutput);
+                         PrintWriter pw = new PrintWriter(fw)) {
                         pw.println(output);
                     }
                 } else {
                     System.out.println(output);
                 }
 
-            } else if (command.equals("type")) {
+            }
+
+            else if (command.equals("type")) {
 
                 if (inputArgs.length > 1) {
                     String cmdToType = inputArgs[1];
@@ -84,7 +106,9 @@ public class Main {
                     }
 
                     if (outputFile != null) {
-                        try (PrintWriter pw = new PrintWriter(outputFile)) {
+                        try (java.io.FileWriter fw =
+                                     new java.io.FileWriter(outputFile, appendOutput);
+                             PrintWriter pw = new PrintWriter(fw)) {
                             pw.println(output);
                         }
                     } else {
@@ -92,7 +116,9 @@ public class Main {
                     }
                 }
 
-            } else {
+            }
+
+            else {
 
                 String path = getPath(command);
 
@@ -100,7 +126,15 @@ public class Main {
                     ProcessBuilder pb = new ProcessBuilder(inputArgs);
 
                     if (outputFile != null) {
-                        pb.redirectOutput(new File(outputFile));
+                        if (appendOutput) {
+                            pb.redirectOutput(
+                                    ProcessBuilder.Redirect.appendTo(
+                                            new File(outputFile)
+                                    )
+                            );
+                        } else {
+                            pb.redirectOutput(new File(outputFile));
+                        }
                     } else {
                         pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
                     }
