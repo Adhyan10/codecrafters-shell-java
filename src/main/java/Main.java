@@ -1,6 +1,8 @@
 import java.io.File;
 import java.util.Scanner;
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -14,7 +16,7 @@ public class Main {
                 continue;
             }
 
-            String[] inputArgs = input.trim().split("\\s+");
+            String[] inputArgs = parseArguments(input);
             String command = inputArgs[0];
 
             if (command.equals("exit")) {
@@ -79,5 +81,32 @@ public class Main {
         }
 
         return null;
+    }
+
+    private static String[] parseArguments(String input) {
+        List<String> args = new ArrayList<>();
+        StringBuilder current = new StringBuilder();
+        boolean inSingleQuote = false;
+
+        for (int i = 0; i < input.length(); i++) {
+            char ch = input.charAt(i);
+
+            if (ch == '\'') {
+                inSingleQuote = !inSingleQuote;
+            } else if (Character.isWhitespace(ch) && !inSingleQuote) {
+                if (current.length() > 0) {
+                    args.add(current.toString());
+                    current.setLength(0);
+                }
+            } else {
+                current.append(ch);
+            }
+        }
+
+        if (current.length() > 0) {
+            args.add(current.toString());
+        }
+
+        return args.toArray(new String[0]);
     }
 }
