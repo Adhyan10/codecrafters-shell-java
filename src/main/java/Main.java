@@ -22,6 +22,7 @@ public class Main {
             String outputFile = null;
             String errorFile = null;
             boolean appendOutput = false;
+            boolean appendError = false;
 
             List<String> filteredArgs = new ArrayList<>();
 
@@ -46,6 +47,15 @@ public class Main {
                 else if (inputArgs[i].equals("2>")) {
                     if (i + 1 < inputArgs.length) {
                         errorFile = inputArgs[i + 1];
+                        appendError = false;
+                        i++;
+                    }
+                }
+
+                else if (inputArgs[i].equals("2>>")) {
+                    if (i + 1 < inputArgs.length) {
+                        errorFile = inputArgs[i + 1];
+                        appendError = true;
                         i++;
                     }
                 }
@@ -59,7 +69,7 @@ public class Main {
 
             String command = inputArgs[0];
 
-            if (errorFile != null) {
+            if (errorFile != null && !appendError) {
                 new PrintWriter(errorFile).close();
             }
 
@@ -140,7 +150,15 @@ public class Main {
                     }
 
                     if (errorFile != null) {
-                        pb.redirectError(new File(errorFile));
+                        if (appendError) {
+                            pb.redirectError(
+                                    ProcessBuilder.Redirect.appendTo(
+                                            new File(errorFile)
+                                    )
+                            );
+                        } else {
+                            pb.redirectError(new File(errorFile));
+                        }
                     } else {
                         pb.redirectError(ProcessBuilder.Redirect.INHERIT);
                     }
