@@ -20,21 +20,32 @@ public class Main {
             String[] inputArgs = parseArguments(input);
 
             String outputFile = null;
+            String errorFile = null;
             List<String> filteredArgs = new ArrayList<>();
 
             for (int i = 0; i < inputArgs.length; i++) {
                 if (inputArgs[i].equals(">") || inputArgs[i].equals("1>")) {
                     if (i + 1 < inputArgs.length) {
                         outputFile = inputArgs[i + 1];
+                        i++;
                     }
-                    break;
+                } else if (inputArgs[i].equals("2>")) {
+                    if (i + 1 < inputArgs.length) {
+                        errorFile = inputArgs[i + 1];
+                        i++;
+                    }
+                } else {
+                    filteredArgs.add(inputArgs[i]);
                 }
-                filteredArgs.add(inputArgs[i]);
             }
 
             inputArgs = filteredArgs.toArray(new String[0]);
 
             String command = inputArgs[0];
+
+            if (errorFile != null) {
+                new PrintWriter(errorFile).close();
+            }
 
             if (command.equals("exit")) {
                 break;
@@ -90,9 +101,14 @@ public class Main {
 
                     if (outputFile != null) {
                         pb.redirectOutput(new File(outputFile));
-                        pb.redirectError(ProcessBuilder.Redirect.INHERIT);
                     } else {
-                        pb.inheritIO();
+                        pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+                    }
+
+                    if (errorFile != null) {
+                        pb.redirectError(new File(errorFile));
+                    } else {
+                        pb.redirectError(ProcessBuilder.Redirect.INHERIT);
                     }
 
                     Process process = pb.start();
