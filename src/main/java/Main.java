@@ -93,18 +93,25 @@ public class Main {
         for (int i = 0; i < input.length(); i++) {
             char ch = input.charAt(i);
 
-            if (ch == '\'' && !inDoubleQuote) {
+            // Handle backslashes outside quotes
+            if (ch == '\\' && !inSingleQuote && !inDoubleQuote) {
+                if (i + 1 < input.length()) {
+                    current.append(input.charAt(i + 1));
+                    i++;
+                }
+            }
+            else if (ch == '\'' && !inDoubleQuote) {
                 inSingleQuote = !inSingleQuote;
-            } 
+            }
             else if (ch == '"' && !inSingleQuote) {
                 inDoubleQuote = !inDoubleQuote;
-            } 
+            }
             else if (Character.isWhitespace(ch) && !inSingleQuote && !inDoubleQuote) {
                 if (current.length() > 0) {
                     args.add(current.toString());
                     current.setLength(0);
                 }
-            } 
+            }
             else {
                 current.append(ch);
             }
