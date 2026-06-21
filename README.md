@@ -22,6 +22,7 @@ tests on our servers:
 codecrafters submit
 ```
 
+
 Time to move on to the next stage!
 
 # Stage 2 & beyond
